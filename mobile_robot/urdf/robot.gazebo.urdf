@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<robot>
+<gazebo reference="base_link">
+<material>Gazebo/Blue</material>
+</gazebo>
+
+<gazebo reference="wheel_rear_left_link">
+<material>Gazebo/Black</material>
+</gazebo>
+
+
+<gazebo reference="wheel_rear_right_link">
+<material>Gazebo/Black</material>
+</gazebo>
+
+<gazebo reference="wheel_front_left_link">
+<material>Gazebo/Black</material>
+</gazebo>
+
+<gazebo reference="wheel_front_right_link">
+<material>Gazebo/Black</material>
+</gazebo>
+
+<gazebo reference="camera">
+<material>Gazebo/Black</material>
+</gazebo>
+
+<gazebo>
+    <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+        <updateRate>100.0</updateRate>
+        <robotNamespace></robotNamespace>
+        <leftFrontJoint>wheel_front_right_joint</leftFrontJoint>
+        <rightFrontJoint>wheel_front_left_joint</rightFrontJoint>
+        <leftRearJoint>wheel_rear_right_joint</leftRearJoint>
+        <rightRearJoint>wheel_rear_left_joint</rightRearJoint>
+        <wheelSeparation>0.5</wheelSeparation>
+        <wheelDiameter>0.256</wheelDiameter>
+        <torque>1000</torque>
+        <commandTopic>cmd_vel</commandTopic>
+        <odometryFrame>odom</odometryFrame>
+        <robotBaseFrame>dummy</robotBaseFrame>
+        <publishWheelTF>true</publishWheelTF>
+        <publishOdom>true</publishOdom>
+        <publishWheelJointState>true</publishWheelJointState>
+        <covariance_x>0.0001</covariance_x>
+        <covariance_y>0.0001</covariance_y>
+        <covariance_yaw>0.01</covariance_yaw>
+    </plugin>
+</gazebo>
+
+<link name="lidar_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.125"/>
+      <inertia ixx="0.001"  ixy="0"  ixz="0" iyy="0.001" iyz="0" izz="0.001" />
+    </inertial>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+         <cylinder radius="0.0508" length="0.055"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+         <cylinder radius="0.0508" length="0.055"/>
+      </geometry>
+    </visual>
+  </link>
+    
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 0.12" rpy="0 0 0"/>
+  </joint>
+    
+  <gazebo reference="lidar_link">
+    <sensor name="lidar" type="ray">
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <update_rate>5</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1.000000</resolution>
+            <min_angle>0.000000</min_angle>
+            <max_angle>6.280000</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.120000</min>
+          <max>3.5</max>
+          <resolution>0.015000</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="scan" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <remapping>~/out:=scan</remapping>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>lidar_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+<gazebo reference="camera">
+<sensor name="cam" type="camera" update_rate="30">
+    <camera name="cam1">
+    <horizontal_fov>1.3962</horizontal_fov>
+    <image>
+        <width>800</width>
+        <height>800</height>
+        <format>R8G8B8</format>
+    </image>
+
+    <clip>
+        <near>0.02</near>
+        <far>300</far>
+    </clip>
+
+    <noise>
+        <type>gaussian</type>
+        <mean>0.0</mean>
+        <stddev>0.007</stddev>
+    </noise>
+    </camera>
+    <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+    </plugin>
+</sensor>   
+</gazebo>
+</robot>

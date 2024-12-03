@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mars_rover">
+<xacro:include filename="$(find mobile_robot)/urdf/robot.gazebo.urdf"/>
+
+
+    <xacro:property name="const"    value="0.083"/>
+    <xacro:property name="mass"     value="1.0"/>
+    <xacro:property name="height"   value="0.1"/>
+    <xacro:property name="width"    value="0.8"/>
+    <xacro:property name="depth"    value="0.7"/>
+    <link name="base_footprint">
+        
+    </link>
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="0.8 0.7 0.1" />
+            </geometry>
+            <material name="Blue">
+                <color rgba="0.0 0.0 0.75 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.0 0.0 0.0" />
+                <cylinder radius="0.0" length="0.0"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="1.0"/>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <inertia ixx="${const*mass*(height*height + depth*depth)}" ixy="0.0" ixz="0.0" 
+                    iyy="${const*mass*(height*height + width*width)}" iyz="0.0" 
+                    izz="${const*mass*(width*width + depth*depth)}"/>
+        </inertial>
+    </link>
+
+<joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <axis xyz="0.0 0.0 0.0"/>
+    <origin xyz="0 0 0.45" rpy="0 0 0"/>
+</joint>
+
+    <link name="camera">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.05" />
+            </geometry>
+            <material name="LightGrey">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.05 0.05 0.05" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.005"/>
+            <origin xyz="0.0 0.0 0.1" rpy="0.0 0.0 0.0"/>
+            <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+    </link>
+
+    <gazebo reference="camera">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <joint name="camera_joint" type="fixed">
+        <origin xyz="0.395 0.0 0.075" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="camera"/>
+        <axis xyz="0.0 0.0 0.0"/>
+        <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0"/>
+    </joint>
+
+<!-- wheel setup -->
+<xacro:macro name="wheel" params="name x y">
+    <link name="wheel_${name}_link">
+    <visual>
+        <geometry>
+            <cylinder radius="0.15" length="0.1"/>
+        </geometry>
+        <material name="Red">
+            <color rgba="0.0 0.0 0.75 "/>
+        </material>
+    </visual>
+    <collision>
+        <geometry>
+            <cylinder radius="0.15" length="0.1"/>
+        </geometry>
+    </collision>
+    <inertial>
+        <mass value="0.50"/>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <inertia ixx=".007" ixy="0.0" ixz="0.0" 
+                    iyy=".007" iyz="0.0" 
+                    izz=".0068"/>
+    </inertial>
+    </link>
+
+    <joint name="wheel_${name}_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="wheel_${name}_link"/>
+        <axis xyz="0.0 .0 1.0"/>
+        <limit effort="1000" velocity="1000"/>
+        <dynamics damping="1.0" friction="1.0"/>
+        <origin xyz="${x} ${y} .0" rpy="1.57 0.0 0.0"/>
+    </joint>
+</xacro:macro>
+
+<xacro:wheel name="front_right" x="-0.25" y="0.4"/>
+<xacro:wheel name="front_left" x="-0.25" y="-0.4"/>
+<xacro:wheel name="rear_right" x="0.25" y="0.4"/>
+<xacro:wheel name="rear_left" x="0.25" y="-0.4"/>
+
+</robot>

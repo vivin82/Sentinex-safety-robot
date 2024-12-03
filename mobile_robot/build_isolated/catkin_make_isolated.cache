@@ -1,0 +1,2 @@
+
+-DCMAKE_BUILD_TYPE=RelWithDebInfo -G Unix Makefiles -DCATKIN_DEVEL_PREFIX=/home/v/simulation_ws/src/mobile_robot/devel_isolated -DCMAKE_INSTALL_PREFIX=/home/v/simulation_ws/src/mobile_robot/install_isolated

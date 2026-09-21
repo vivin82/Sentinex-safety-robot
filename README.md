@@ -1,55 +1,43 @@
-Sentinex (Factory Safety Compliance Robot)
-*Directory: `/sentinex`*
+# Sentinex
 
-Sentinex is a 4WD autonomous mobile robot designed to monitor industrial workspaces and ensure personnel are complying with safety gear protocols. By fusing LiDAR-based spatial awareness with a YOLO-driven computer vision pipeline, the rover navigates active environments to detect the presence of hardhats and high-visibility safety vests.
+Factory safety compliance robot
 
-### Hardware & Kinematics
-* **Base Chassis:** A custom four-wheel drive chassis utilizing DC gear motors, controlled by two independent motor driver boards.
-* **Core Compute:** A Raspberry Pi handles the high-level logic, switching the motor driver inputs via 8 GPIO pins to execute Forward, Reverse, Left, Right, and Stop commands.
-* **Sensors:** 2D LiDAR for environmental scanning and a standard camera for real-time visual feeds.
+Sentinex is a small four-wheel robot meant to move around a work area and check that people are wearing their safety gear. A LiDAR keeps it clear of obstacles, and a camera with a YOLO detector looks for helmets and safety vests.
 
-### Software & Perception
-* **Obstacle Avoidance (ROS 1):** A dedicated ROS node subscribes to the `/scan` topic. If the path is clear, the robot maintains a forward velocity of 0.2 m/s via `/cmd_vel`. If an obstacle is detected within 0.5m, the robot halts and executes an in-place rotation. 
-* **PPE Detection Pipeline:** The vision model is currently staged in a Google Colab notebook. It leverages OpenCV to run YOLOv5 and YOLOv8 models to detect safety helmets and vests on a live video feed.
+The project covers the whole chain: the chassis and motor drivers, the ROS node for obstacle avoidance, and the vision model.
 
-### How to Run Sentinex
-1. **Motor Control:** Run the standalone Python script on the Raspberry Pi and use `W`, `A`, `S`, `D`, `X` to drive manually.
-2. **ROS Navigation:** Run `roscore`, ensure LiDAR is publishing to `/scan`, and run the `obstacle_avoidance.py` node.
-3. **Vision Pipeline:** Open the Colab notebook, select a GPU runtime, and execute cells sequentially.
+## How it is put together
 
-*Status: Motor control, LiDAR avoidance, and standalone YOLO detection are complete. Currently integrating the perception pipeline directly with the drive logic to enable autonomous violation flagging.*
+**Base.** A four-wheel chassis with DC gear motors, run by two motor driver boards. A Raspberry Pi switches the driver inputs through eight GPIO pins, which gives forward, reverse, left, right and stop. For testing, the robot can be driven from the keyboard with w, a, s, d and x.
 
----
+**Obstacle avoidance.** A ROS node listens to the LiDAR scan on `/scan`. If anything comes closer than 0.5 m, the robot stops and turns on the spot. If the way is clear, it drives forward at 0.2 m/s. Velocity commands go out on `/cmd_vel`. The same node also subscribes to the camera image on `/camera/image_raw`.
 
-## 📂 Additional Portfolio Projects
+**PPE detection.** The vision work is in a Colab notebook. It downloads the Construction Site Safety image dataset from Kaggle and sets up YOLOv5 and YOLOv8 from Ultralytics, along with OpenCV code for running a model on a live webcam feed.
 
-*Note: Documentation and source code for the following systems are organized in their respective folders within this repository.*
+## Tools used
 
-### 1. Autonomous Outdoor Surveillance Rover
-A 4WD mobile robot designed for outdoor surveillance using ROS, Teach-and-Repeat navigation, YOLOv8 human vision detection, and an NVIDIA Jetson TX2.
+Python, ROS 1, OpenCV, NumPy, PyTorch, Ultralytics YOLO, TensorFlow/Keras, RPi.GPIO
 
-### 2. Elderly Assistance Mobile Robot
-A multi-functional assistive robot integrating smartwatch BLE RSSI tracking, ultrasonic sensor fusion, and heart rate monitoring using a dual-microcontroller architecture (Arduino UNO R4 & ESP32).
+## Running it
 
-### 3. 6-DOF PUMA Robotic Arm Kinematics
-Kinematics simulation and trajectory planning for a 6-DOF robotic manipulator, validated using ROS and Gazebo.
+Motor test: run the motor control script on the Raspberry Pi and type w, a, s, d or x. Each command runs for one second and then the motors stop.
 
-### 4. Thermal-to-RGB Image Colorization
-A deep learning computer vision model trained to convert thermal and infrared images into the visible spectrum.
+Obstacle avoidance: start `roscore`, make sure the LiDAR is publishing on `/scan` and the camera on `/camera/image_raw`, then run the ROS node.
 
-### 5. Automated Pre-Impact Bumper System
-Mechanical design and fabrication of a vehicle bumper system designed to automatically extend and absorb collision forces prior to impact.
+PPE detection: open the notebook in Google Colab and run the cells in order. A GPU runtime makes training much faster.
 
----
+## Where it stands
 
-## 🛠️ Technical Stack
-* **Frameworks & Middleware:** ROS 1, Gazebo, Webots, OpenCV, YOLO (v5/v8), PyTorch, TensorFlow/Keras.
-* **Languages:** Python, C++, C.
-* **Hardware Platforms:** NVIDIA Jetson TX2, Raspberry Pi, Arduino UNO R4, ESP32, RPLIDAR.
+Motor control and LiDAR obstacle avoidance are written, and the notebook has the dataset and YOLO models set up. The detector is not yet connected to the drive logic. Connecting the two, so the robot stops and flags a violation when it sees someone without a helmet or vest, is the next step.
 
----
+## Credits
 
-## 📝 Credits & License
-* **Sentinex Dataset:** Construction Site Safety Image Dataset (Roboflow) by snehilsanyal on Kaggle.
-* **Sentinex Models:** Ultralytics YOLO.
-* **License:** Copyright (c) 2026 Vivin Viju. All rights reserved. No permission is granted to use, copy, modify, or distribute this code or the design files without written permission from the author.
+Dataset: Construction Site Safety Image Dataset (Roboflow) by snehilsanyal on Kaggle. YOLO models by Ultralytics.
+
+## Author
+
+Vivin Viju, M.Tech in Robotics and Automation
+
+## License
+
+Copyright (c) 2026 Vivin Viju. All rights reserved. No permission is granted to use, copy, modify, or distribute this code or the design files without written permission from the author.

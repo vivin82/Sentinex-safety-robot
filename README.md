@@ -1,11 +1,4 @@
-# Robotics & Automation Portfolio
-**Author:** Vivin Viju | M.Tech in Robotics and Automation
-
-Welcome to my engineering portfolio. This single repository contains the source code, ROS workspaces, hardware schematics, and simulation files for my work in robotics, embedded systems, computer vision, and mechanical design.
-
----
-
-## 🚀 Featured Project: Sentinex (Factory Safety Compliance Robot)
+Sentinex (Factory Safety Compliance Robot)
 *Directory: `/sentinex`*
 
 Sentinex is a 4WD autonomous mobile robot designed to monitor industrial workspaces and ensure personnel are complying with safety gear protocols. By fusing LiDAR-based spatial awareness with a YOLO-driven computer vision pipeline, the rover navigates active environments to detect the presence of hardhats and high-visibility safety vests.

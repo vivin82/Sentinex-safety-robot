@@ -1,15 +1,4 @@
-<<<<<<< HEAD
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/DqPwyK9C)
-# 221LIA001 - Robotics Lab 
-## Course Project - Interim evaluation submission
-
-All batches have to commit the following to the batch project repo;
-1. **catkin_package** of the project code submitted for interim evaluation.
-2. **Gazebo ROS simulation video** of the project in _webm_ format
-3. List of Websites/Github/StackOverflow/ROS answers referred while realizing the interim project submission.
-For item 3 main ones would do but something like https://wiki.ros.org won't do you have to mention the actual page. For instance https://wiki.ros.org/ROS/Tutorials/CreatingPackage
-=======
-# Sentinex
+'Sentinex'
 
 Factory safety compliance robot
 
@@ -17,15 +6,15 @@ Sentinex is a small four-wheel robot meant to move around a work area and check 
 
 The project covers the whole chain: the chassis and motor drivers, the ROS node for obstacle avoidance, and the vision model.
 
-## How it is put together
+##How it is put together
 
-**Base.** A four-wheel chassis with DC gear motors, run by two motor driver boards. A Raspberry Pi switches the driver inputs through eight GPIO pins, which gives forward, reverse, left, right and stop. For testing, the robot can be driven from the keyboard with w, a, s, d and x.
+Base- A four-wheel chassis with DC gear motors, run by two motor driver boards. A Raspberry Pi switches the driver inputs through eight GPIO pins, which gives forward, reverse, left, right and stop. For testing, the robot can be driven from the keyboard with w, a, s, d and x.
 
-**Obstacle avoidance.** A ROS node listens to the LiDAR scan on `/scan`. If anything comes closer than 0.5 m, the robot stops and turns on the spot. If the way is clear, it drives forward at 0.2 m/s. Velocity commands go out on `/cmd_vel`. The same node also subscribes to the camera image on `/camera/image_raw`.
+Obstacle avoidance- A ROS node listens to the LiDAR scan on `/scan`. If anything comes closer than 0.5 m, the robot stops and turns on the spot. If the way is clear, it drives forward at 0.2 m/s. Velocity commands go out on `/cmd_vel`. The same node also subscribes to the camera image on `/camera/image_raw`.
 
-**PPE detection.** The vision work is in a Colab notebook. It downloads the Construction Site Safety image dataset from Kaggle and sets up YOLOv5 and YOLOv8 from Ultralytics, along with OpenCV code for running a model on a live webcam feed.
+PPE detection- The vision work is in a Colab notebook. It downloads the Construction Site Safety image dataset from Kaggle and sets up YOLOv5 and YOLOv8 from Ultralytics, along with OpenCV code for running a model on a live webcam feed.
 
-## Tools used
+##Tools used
 
 Python, ROS 1, OpenCV, NumPy, PyTorch, Ultralytics YOLO, TensorFlow/Keras, RPi.GPIO
 
